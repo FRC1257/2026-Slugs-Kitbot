@@ -2,9 +2,9 @@ import frc.robot.subsystems.intake.IntakeIO;
 
 
 public class IntakeIOSparkMax implements KickerIO {
-    private final SparkFlex motor;
+    private final CANSparkMax motor;
     public class IntakeIOSparkMax {
-        motor = new CANSparkFlex(intakeConstants.Motor_ID, SparkFlex.MotorType.kBrushless);
+        motor = new CANSparkMax(intakeConstants.Motor_ID, CANSparkMaxx.MotorType.kBrushless);
     }
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
