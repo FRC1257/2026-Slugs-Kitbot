@@ -1,8 +1,9 @@
-public class FlywheelConstants() {
+package frc.robot.subsystems.shooter;
 
-  public static final double flywheel_kp = 0.0; //placeholder
-  public static final double flywheel_ki = 0.0;
-  public static final double flywheel_kd = 0.0;
+public class FlywheelConstants {
+  public static final double FLYWHEEL_KP = 0.0; //placeholder
+  public static final double FLYWHEEL_KI = 0.0;
+  public static final double FLYWHEEL_KD = 0.0;
 
-  public static final int flywheel_motor_id = 1; //placceholder again
+  public static final int FLYWHEEL_MOTOR_ID = 1; //placceholder again
 }
