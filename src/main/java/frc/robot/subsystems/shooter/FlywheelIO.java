@@ -5,11 +5,13 @@ import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLog;
 
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Volts;
 
 public interface FlywheelIO {
     @AutoLog
     public static class FlywheelIOInputs {
         public AngularVelocity rpm=RPM.of(0); // rotations per minute
+        public Voltage voltage=Volts.of(0);
     }
 
     public default void updateInputs(FlywheelIOInputsAutoLogged inputs) {
@@ -21,4 +23,6 @@ public interface FlywheelIO {
     public default void setVoltage(Voltage voltage) {}
 
     public default void stop() {}
+
+    public default void setPID(double kp, double ki, double kd) {}
 }
