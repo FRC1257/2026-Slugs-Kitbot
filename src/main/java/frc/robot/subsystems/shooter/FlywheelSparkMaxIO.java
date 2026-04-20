@@ -1,4 +1,4 @@
 package frc.robot.subsystems.shooter;
 
-public class FlywheelSparkMax {
+public class FlywheelSparkMaxIO {
 }
