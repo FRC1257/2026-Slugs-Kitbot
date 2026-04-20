@@ -1,4 +1,4 @@
-package frc.robot.subsystems.intake;
+package frc.robot.subsystems.Intake;
 import org.littletonrobotics.junction.AutoLog;
 
 
@@ -10,7 +10,7 @@ public interface IntakeIO {
         public double tempCelsius = 0.0;
     }
     public default void updateInputs(IntakeIOInputs inputs) {};
-    public default void intake(double volts) {};
+    public default void intake(double voltage) {};
     public default void stop() {};
 }
 
