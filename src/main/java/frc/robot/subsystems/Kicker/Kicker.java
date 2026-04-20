@@ -1,4 +1,4 @@
-public class main {
+public class Kicker {
     
 }
 //copy from tanish 
