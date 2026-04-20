@@ -4,12 +4,12 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLog;
 
-import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RPM;
 
 public interface FlywheelIO {
     @AutoLog
     public static class FlywheelIOInputs {
-        public AngularVelocity rpm=RadiansPerSecond.of(0); // rotations per minute
+        public AngularVelocity rpm=RPM.of(0); // rotations per minute
     }
 
     public default void updateInputs(FlywheelIOInputsAutoLogged inputs) {
