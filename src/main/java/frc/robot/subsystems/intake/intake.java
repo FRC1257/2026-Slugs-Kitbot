@@ -29,8 +29,13 @@ public class Intake extends SubsystemBase {
         ).withName("Intake/On");
     }
     public Command stopIntake() {
-        return runOnce(
+        return runVoltage(
             () -> Volts.of(0.0)
         ).withName("Intake/Off");
+    }
+    public Command stopCommand() {
+        return runOnce(
+            io::stop
+        );
     }
 }
