@@ -1,10 +1,13 @@
 import frc.robot.subsystems.intake.IntakeIO;
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Celsius;
+import static edu.wpi.first.units.Units.Volts;
 
 
-public class IntakeIOSparkMax implements KickerIO {
-    private final CANSparkMax motor;
+public class IntakeIOSparkMax implements IntakeIO {
+    private final SparkMax motor;
     public class IntakeIOSparkMax {
-        motor = new CANSparkMax(intakeConstants.Motor_ID, CANSparkMaxx.MotorType.kBrushless);
+        motor = new SparkMax(intakeConstants.Motor_ID, SparkMax.MotorType.kBrushless);
     }
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
@@ -13,7 +16,7 @@ public class IntakeIOSparkMax implements KickerIO {
         inputs.appliedVoltage = Volts.of(motor.getAppliedOutput() * motor.getBusVoltage());
     }
     @Override
-    public void intake(double voltage) {
+    public void setVoltage(double voltage) {
         motor.setVoltage(voltage);
     }
     @Override
