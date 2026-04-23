@@ -5,5 +5,8 @@ public class FlywheelConstants {
   public static final double FLYWHEEL_KI = 0.0;
   public static final double FLYWHEEL_KD = 0.0;
 
+  public static final double FLYWHEEL_KS = 0.0;
+  public static final double FLYWHEEL_KV = 0.0;
+
   public static final int FLYWHEEL_MOTOR_ID = 1; //placceholder again
 }
