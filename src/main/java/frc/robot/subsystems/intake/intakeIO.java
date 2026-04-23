@@ -10,9 +10,9 @@ import edu.wpi.first.units.measure.Voltage;
 public interface IntakeIO {
     @AutoLog
     public class IntakeIOInputs {
-        public Voltage appliedVoltage = 0.0;
-        public Current currentAmps = 0.0;
-        public Temperature tempCelsius = 0.0;
+        public Voltage appliedVoltage = Volts.of(0.0);
+        public Current currentAmps = Amps.of(0.0);
+        public Temperature tempCelsius = Celsius.of(0.0);
     }
     public default void updateInputs(IntakeIOInputs inputs) {};
     public default void setVoltage(Voltage voltage) {};

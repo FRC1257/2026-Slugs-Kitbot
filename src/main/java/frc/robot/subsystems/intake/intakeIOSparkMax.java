@@ -3,11 +3,23 @@ import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Celsius;
 import static edu.wpi.first.units.Units.Volts;
 
-
 public class IntakeIOSparkMax implements IntakeIO {
-    private final SparkMax motor;
+    private SparkMax motor;
+    private RelativeEncoder encoder;
+
     public class IntakeIOSparkMax {
         motor = new SparkMax(intakeConstants.Motor_ID, SparkMax.MotorType.kBrushless);
+        encoder = motor.getEncoder();
+        //configurations copied from 2026 code
+        SparkFlexConfig config = new SparkFlexConfig();
+        config.idleMode(IdleMode.kCoast);
+        config.voltageCompensation(12);
+        config.smartCurrentLimit(60);
+        config.inverted(true);
+        config.encoder
+            .positionConversionFactor(Math.PI * 2.0)
+            .velocityConversionFactor(Math.PI * 2.0 / 60.0);
+        motor.configure(config, com.revrobotics.ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters); 
     }
     @Override
     public void updateInputs(IntakeIOInputs inputs) {

@@ -25,12 +25,12 @@ public class Intake extends SubsystemBase {
     }
     public Command runIntake() {
         return runVoltage(
-            () -> IntakeConstants.Intake_Voltage
+            () -> Volts.of(IntakeConstants.Intake_Voltage)
         ).withName("Intake/On");
     }
     public Command stopIntake() {
         return runOnce(
-            () -> io.stop()
+            () -> Volts.of(0.0)
         ).withName("Intake/Off");
     }
 }
