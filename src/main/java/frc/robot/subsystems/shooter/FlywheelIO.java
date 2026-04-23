@@ -24,7 +24,5 @@ public interface FlywheelIO {
 
     public default void stop() {}
 
-    public default void setFF() {}
-
     public default void setPID(double kp, double ki, double kd) {}
 }

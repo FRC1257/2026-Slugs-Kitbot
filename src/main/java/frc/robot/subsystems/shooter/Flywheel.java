@@ -38,8 +38,6 @@ public class Flywheel extends SubsystemBase {
         io.stop();
     }
 
-    public void setFF() { io.setFF();}
-
     public Command runVoltage(Supplier<Voltage> voltage) {
         return runEnd(()->setVoltage(voltage.get()), this::stop);
     }
