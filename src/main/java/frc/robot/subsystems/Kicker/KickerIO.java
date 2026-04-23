@@ -24,7 +24,7 @@ public interface KickerIO {
         public Current kickerCurrent = Amps.of(0.0);
     }
 
-public default void updateInputs(KickerIOInputs inputs) {}
+    public default void updateInputs(KickerIOInputs inputs) {}
     
     public default void setVoltage(Voltage voltage) {}
 
@@ -37,6 +37,5 @@ public default void updateInputs(KickerIOInputs inputs) {}
     public default void setFF(double kS, double kV) {}
 
     public default void setBreakMode(boolean enabled) {}
-
 
 }

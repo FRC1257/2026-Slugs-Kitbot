@@ -22,6 +22,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage; 
+public class KickerIOSparkMax implements KickerIO {
 
  private SparkMax kickerMotor = new SparkMax(KickerConstants.KICKER_MOTOR_ID, SparkMax.MotorType.kBrushless);
  private SimpleMotorFeedforward feedforward;
