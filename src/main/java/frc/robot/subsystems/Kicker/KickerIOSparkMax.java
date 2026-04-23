@@ -1,4 +1,4 @@
-public class KickerIOSparkMax {
+public class KickerIOSparkMax implements {
     
 }
 //copy from tanish 

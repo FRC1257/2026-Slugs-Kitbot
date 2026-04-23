@@ -1,3 +1,3 @@
-public class KIckerIOSim {
+public class KIckerIOSim implements KickerIO {
     
 }

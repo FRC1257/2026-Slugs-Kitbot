@@ -1,5 +1,5 @@
 
-public class KickerIO {
+public interface KickerIO {
     @AutoLog
     public static class KickerIOInputs {
         public boolean kickerLoaded = false;// this was kicker connected i think thats what it means
