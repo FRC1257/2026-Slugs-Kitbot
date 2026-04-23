@@ -16,7 +16,7 @@ public class IntakeIOSparkMax implements IntakeIO {
         inputs.appliedVoltage = Volts.of(motor.getAppliedOutput() * motor.getBusVoltage());
     }
     @Override
-    public void setVoltage(double voltage) {
+    public void setVoltage(Voltage voltage) {
         motor.setVoltage(voltage);
     }
     @Override
