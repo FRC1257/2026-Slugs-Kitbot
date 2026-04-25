@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.AngularVelocity;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import edu.wpi.first.units.measure.Voltage;
 
 import static edu.wpi.first.units.Units.*;
@@ -44,6 +45,7 @@ public class FlywheelSparkMaxIO implements FlywheelIO {
 
       @Override
       public void updateInputs(FlywheelIOInputs inputs) {
+        inputs.flywheelAngularVelocity = RadiansPerSecond.of(encoder.getVelocity());
         inputs.flywheelVoltage = Volts.of(motor.getAppliedOutput() * motor.getBusVoltage());
         inputs.flywheelCurrent = Amps.of(motor.getOutputCurrent());
         inputs.flywheelTemperature = Celsius.of(motor.getMotorTemperature());
