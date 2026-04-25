@@ -8,9 +8,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 
-import static edu.wpi.first.units.Units.Volts;
-import static edu.wpi.first.units.Units.Celsius;
-import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.*;
 
 public class FlywheelSparkMaxIO implements FlywheelIO {
 
@@ -25,6 +23,7 @@ public class FlywheelSparkMaxIO implements FlywheelIO {
       encoder = motor.getEncoder();
       flywheelConfig = new SparkMaxConfig();
       feedforward = new SimpleMotorFeedforward(FlywheelConstants.FLYWHEEL_KS, FlywheelConstants.FLYWHEEL_KV);
+      controller = motor.getClosedLoopController();
 
   }
       @Override

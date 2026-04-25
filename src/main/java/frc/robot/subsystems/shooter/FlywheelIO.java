@@ -14,13 +14,12 @@ import static edu.wpi.first.units.Units.Celsius;
 public interface FlywheelIO {
     @AutoLog
     public static class FlywheelIOInputs {
-        public AngularVelocity flywheelRPM=RPM.of(0); // rotations per minute
-        public Voltage flywheelVoltage = Volts.of(0.0);
+        public AngularVelocity flywheelRPM=RPM.of(0); // rotations per minute; change rpm to angular vel in rad?
         public Temperature flywheelTemperature = Celsius.of(0.0);
         public Current flywheelCurrent = Amps.of(0.0);
     }
 
-    public default void updateInputs(FlywheelIOInputsAutoLogged inputs) {}
+    public default void updateInputs(FlywheelIOInputs inputs) {}
 
     public default void setVelocity(AngularVelocity rpm) {}
 
@@ -29,4 +28,6 @@ public interface FlywheelIO {
     public default void stop() {}
 
     public default void setPID(double kp, double ki, double kd) {}
+
+    public default void setFF(double ks, double kv) {}
 }
