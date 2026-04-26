@@ -41,6 +41,8 @@ public class Flywheel extends SubsystemBase {
         }
         /*
         if the values change, it will redo the feedforward/pid
+        copy from 2026 code btw, bc i dont know why it is formatted
+        pretty sure all hashcode does is return same value if nothing changed
          */
 
 

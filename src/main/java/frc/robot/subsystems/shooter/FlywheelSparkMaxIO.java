@@ -31,9 +31,11 @@ public class FlywheelSparkMaxIO implements FlywheelIO {
       feedforward = new SimpleMotorFeedforward(FlywheelConstants.FLYWHEEL_KS, FlywheelConstants.FLYWHEEL_KV);
       controller = motor.getClosedLoopController();
 
+      flywheelConfig.closedLoop.pid(FlywheelConstants.FLYWHEEL_KP, FlywheelConstants.FLYWHEEL_KI, FlywheelConstants.FLYWHEEL_KD);
       motor.configure(flywheelConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
   }
+
 
       @Override
       public void setVoltage (Voltage voltage){
