@@ -4,10 +4,8 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import frc.robot.util.misc.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import java.util.function.Supplier;
 
@@ -44,6 +42,8 @@ public class Flywheel extends SubsystemBase {
         /*
         if the values change, it will redo the feedforward/pid
          */
+
+
     }
 
     public AngularVelocity getAngularVelocity() {
@@ -62,19 +62,19 @@ public class Flywheel extends SubsystemBase {
         io.stop();
     }
 
-    public Command runVoltage(Supplier<Voltage> voltage) {
+    public Command runVoltageCommand(Supplier<Voltage> voltage) {
         return runEnd(()->setVoltage(voltage.get()), this::stop);
     }
 
-    private Command runVelocity(Supplier<AngularVelocity> rpm) {
+    private Command runVelocityCommand(Supplier<AngularVelocity> velocityRadsPerSec) {
         return runEnd(
-                ()->setVelocity(rpm.get()),
+                ()->setVelocity(velocityRadsPerSec.get()),
                 this::stop
         ); //maybe if need the goofy goal thing in example ill put that
         //goofy
     }
 
-    public Command commandStop() {
-        return run(this::stop);
+    public Command stopCommand() {
+        return runOnce(this::stop).withName("Flywheel/StopCommand");
     }
 }

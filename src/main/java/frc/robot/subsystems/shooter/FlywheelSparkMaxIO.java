@@ -3,6 +3,8 @@ package frc.robot.subsystems.shooter;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig;
@@ -29,10 +31,20 @@ public class FlywheelSparkMaxIO implements FlywheelIO {
       feedforward = new SimpleMotorFeedforward(FlywheelConstants.FLYWHEEL_KS, FlywheelConstants.FLYWHEEL_KV);
       controller = motor.getClosedLoopController();
 
+      motor.configure(flywheelConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
   }
+
       @Override
       public void setVoltage (Voltage voltage){
           motor.setVoltage(voltage);
+      }
+
+      @Override
+      public void setVelocity (AngularVelocity velocityRadsPerSec) {
+        double feedforwardVolts = feedforward.calculate(velocityRadsPerSec.in(RadiansPerSecond));
+        controller.setSetpoint(velocityRadsPerSec.in(RadiansPerSecond), SparkBase.ControlType.kVelocity, ClosedLoopSlot.kSlot0, feedforwardVolts);
+        // controltype.kvelocity --> set control type to velocity, closedloopslot.kslot0 --> use pid in slot 0 (maybe needs to be diff idk where pid is stored)
       }
 
       @Override
