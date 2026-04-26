@@ -34,7 +34,16 @@ public class Flywheel extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Flywheel",inputs);
 
+        if(Kp.hasChanged(hashCode()) || Ki.hasChanged(hashCode()) || Kd.hasChanged(hashCode())) {
+            io.setPID(Kp.get(), Ki.get(), Kd.get());
+        }
 
+        if(Ks.hasChanged(hashCode()) || Kv.hasChanged(hashCode())) {
+            io.setFF(Ks.get(), Kv.get());
+        }
+        /*
+        if the values change, it will redo the feedforward/pid
+         */
     }
 
     public AngularVelocity getAngularVelocity() {

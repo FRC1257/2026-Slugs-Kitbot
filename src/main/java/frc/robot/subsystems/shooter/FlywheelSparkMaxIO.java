@@ -1,8 +1,11 @@
 package frc.robot.subsystems.shooter;
 
+import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -38,7 +41,14 @@ public class FlywheelSparkMaxIO implements FlywheelIO {
       }
 
       @Override
-      public void setFF ( double ks, double kv){
+      public void setPID(double kp, double ki, double kd) {
+        motor.configure(new SparkMaxConfig().apply(ClosedLoopConfig().pid(kp, ki, kd)), ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+        /* resetmode makes sure that previous config will not be deleted before this one is applied --> good for small changes or smth
+            persistmode makes sure that config is saved if battery is unplugged/robot lose power (so that the pid config will still be there)
+         */
+      }
+      @Override
+      public void setFF ( double ks, double kv) {
           feedforward = new SimpleMotorFeedforward(ks, kv);
 
       }
