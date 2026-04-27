@@ -11,7 +11,7 @@ import static edu.wpi.first.units.Units.*;
 public interface FlywheelIO {
     @AutoLog
     public static class FlywheelIOInputs {
-        public AngularVelocity flywheelAngularVelocity= RadiansPerSecond.of(0.0); // rotations per minute; change rpm to angular vel in rad?
+        public AngularVelocity flywheelAngularVelocity= RPM.of(0.0); // rotations per minute; change rpm to angular vel in rad?
         public Temperature flywheelTemperature = Celsius.of(0.0);
         public Current flywheelCurrent = Amps.of(0.0);
         public Voltage flywheelVoltage = Volts.of(0.0);
@@ -19,7 +19,7 @@ public interface FlywheelIO {
 
     public default void updateInputs(FlywheelIOInputs inputs) {}
 
-    public default void setVelocity(AngularVelocity velocityRadsPerSec) {}
+    public default void setVelocity(RPM) {}
 
     public default void setVoltage(Voltage voltage) {}
 

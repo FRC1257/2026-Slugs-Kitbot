@@ -11,7 +11,6 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.AngularVelocity;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 import edu.wpi.first.units.measure.Voltage;
 
 import static edu.wpi.first.units.Units.*;
@@ -43,9 +42,9 @@ public class FlywheelSparkMaxIO implements FlywheelIO {
       }
 
       @Override
-      public void setVelocity (AngularVelocity velocityRadsPerSec) {
-        double feedforwardVolts = feedforward.calculate(velocityRadsPerSec.in(RadiansPerSecond));
-        controller.setSetpoint(velocityRadsPerSec.in(RadiansPerSecond), SparkBase.ControlType.kVelocity, ClosedLoopSlot.kSlot0, feedforwardVolts);
+      public void setVelocity (AngularVelocity RPM) {
+        double feedforwardVolts = feedforward.calculate(RPM);
+        controller.setSetpoint(RPM), SparkBase.ControlType.kVelocity, ClosedLoopSlot.kSlot0, feedforwardVolts);
         // controltype.kvelocity --> set control type to velocity, closedloopslot.kslot0 --> use pid in slot 0 (maybe needs to be diff idk where pid is stored)
       }
 
@@ -69,7 +68,7 @@ public class FlywheelSparkMaxIO implements FlywheelIO {
 
       @Override
       public void updateInputs(FlywheelIOInputs inputs) {
-        inputs.flywheelAngularVelocity = RadiansPerSecond.of(encoder.getVelocity());
+        inputs.flywheelAngularVelocity = RPM.of(encoder.getVelocity());
         inputs.flywheelVoltage = Volts.of(motor.getAppliedOutput() * motor.getBusVoltage());
         inputs.flywheelCurrent = Amps.of(motor.getOutputCurrent());
         inputs.flywheelTemperature = Celsius.of(motor.getMotorTemperature());

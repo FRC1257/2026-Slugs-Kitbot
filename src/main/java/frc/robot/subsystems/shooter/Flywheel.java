@@ -52,8 +52,8 @@ public class Flywheel extends SubsystemBase {
         return inputs.flywheelAngularVelocity;
     }
 
-    public void setVelocity(AngularVelocity velocityRadsPerSec) {
-        io.setVelocity(velocityRadsPerSec);
+    public void setVelocity(AngularVelocity RPM) {
+        io.setVelocity(RPM);
     }
 
     public void setVoltage(Voltage voltage) {
