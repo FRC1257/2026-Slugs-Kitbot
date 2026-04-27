@@ -18,7 +18,7 @@ public class Intake extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Intake", inputs);
     }
-    public Command runVoltage(Supplier<Voltage> voltage) {
+    private Command runVoltage(Supplier<Voltage> voltage) {
         return run(
             () -> io.setVoltage(UnitUtil.clamp(voltage.get(), Volts.of(-12.0), Volts.of(12.0)))
         );
@@ -27,6 +27,11 @@ public class Intake extends SubsystemBase {
         return runVoltage(
             () -> Volts.of(IntakeConstants.Intake_Voltage)
         ).withName("Intake/On");
+    }
+    public Command runOuttake() {
+        return runVoltage(
+            () -> Volts.of(IntakeConstants.Outtake_Voltage)
+        ).withName("Outtake/On");
     }
     public Command stopIntake() {
         return runVoltage(

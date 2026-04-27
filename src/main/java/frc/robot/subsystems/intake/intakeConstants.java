@@ -5,4 +5,5 @@ import edu.wpi.first.units.measure.Voltage;
 public class IntakeConstants {
     public static final int Motor_ID = 1;
     public static final Voltage Intake_Voltage = Volts.of(10.0);
+    public static final Voltage Outtake_Voltage = Volts.of(-10.0)
 }
