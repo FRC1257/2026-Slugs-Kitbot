@@ -1,47 +1,21 @@
-
-
+//Kicker.java          
 package frc.robot.subsystems.Kicker;
 
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 
 import org.littletonrobotics.junction.Logger;
 
 
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Resistance;
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.Alert;
-import edu.wpi.first.wpilibj.Alert.AlertType;
-import edu.wpi.first.wpilibj.event.EventLoop;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Robot;
-import frc.robot.util.misc.LoggedTunableNumber;
-
-
-package frc.robot.subsystems.Kicker;
-
-
-import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.Volts;
-
-
-import java.util.function.Supplier;
-
-
-import org.littletonrobotics.junction.Logger;
+import com.revrobotics.spark.SparkClosedLoopController;
 
 
 import edu.wpi.first.math.filter.Debouncer;
@@ -49,30 +23,23 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.util.misc.LoggedTunableNumber;
+
+
 
 
 public class Kicker extends SubsystemBase {
-
-
-    private static final LoggedTunableNumber Kp = new LoggedTunableNumber("Kicker/Kp", KickerConstants.KICKER_KP);
-    private static final LoggedTunableNumber Ki = new LoggedTunableNumber("Kicker/Ki", KickerConstants.KICKER_KI);
-    private static final LoggedTunableNumber Kd = new LoggedTunableNumber("Kicker/Kd", KickerConstants.KICKER_KD);
    
-    private static final LoggedTunableNumber Ks = new LoggedTunableNumber("Kicker/Ks", KickerConstants.KICKER_KS);
-    private static final LoggedTunableNumber Kv = new LoggedTunableNumber("Kicker/Kv", KickerConstants.KICKER_KV);
-
-
-    private static final LoggedTunableNumber tolerance = new LoggedTunableNumber("Kicker/Tolerance", KickerConstants.KICKER_VELOCITY_TOLERANCE);
-
-
-    private static final LoggedTunableNumber kickerIntakeVelocity = new LoggedTunableNumber("Kicker/IntakeVelocity", KickerConstants.KICKER_INTAKE_VELOCITY.magnitude());
-    private static final LoggedTunableNumber kickerOuttakeVelocity = new LoggedTunableNumber("Kicker/OuttakeVelocity", KickerConstants.KICKER_OUTTAKE_VELOCITY.magnitude());
+SparkClosedLoopController pid_controller = KickerConstants.KICKER_MOTOR_ID.getClosedLoopController();
+PowerDistribution Pd = new PowerDistribution();
+int MotorThreshold= 0; //add this to the constants file
 
 
     private final KickerIO io;
@@ -102,32 +69,36 @@ public class Kicker extends SubsystemBase {
 }
    @Override
    public void periodic() {
-    io.updateInputs(inputs);
-    Logger.processInputs(getName(), inputs);
-   
-    if(Kp.hasChanged(hashCode()) || Ki.hasChanged(hashCode()) || Kd.hasChanged(hashCode())) {
-        io.setPID(Kp.get(), Ki.get(), Kd.get());
+        io.updateInputs(inputs);
+        Logger.processInputs(getName(), inputs);
+
+        if(Kp.hasChanged(hashCode()) || Ki.hasChanged(hashCode()) || Kd.hasChanged(hashCode())) {
+            io.setPID(Kp.get(), Ki.get(), Kd.get());
+        }
+
+        if(Ks.hasChanged(hashCode()) || Kv.hasChanged(hashCode())||Ka.hasChanged(hashCode())) {
+            io.setFF(Ks.get(), Kv.get(),Ka.get());
+        }
+
+        disconnected.set(!connectedDebouncer.calculate(inputs.kickerLoaded));
+   }
+
+    public void getBatteryVoltage(){
+       double BatteryVoltage=RobotController.getBatteryVoltage();
+       LoggerrecordOutput("Battery Voltage", BatteryVoltage);//used wrong type of logger.output here need to change later
     }
-
-
-    if(Ks.hasChanged(hashCode()) || Kv.hasChanged(hashCode())||Ka.hasChanged(hashCode())) {
-        io.setFF(Ks.get(), Kv.get(),Ka.get());
+    public void getTotalCurrent(){  //don't really know if this will have use but I don't think it'll hurt to put it here
+        double Current = Pd.getTotalCurrent();
+        Logger.recordOutput("Current", DoubleSupplier<Current>Current);
     }
-
-
-    disconnected.set(!connectedDebouncer.calculate(inputs.kickerConnected));
-
-
-    Robot.controller::GetBatteryVoltage(12, Resistance, Current);
-   
     public Command runVoltageCommand(Supplier<Voltage> voltage) {
         return runEnd(() -> io.setVoltage(voltage.get()), io::stop)
             .withName(getName() + "/RunVoltageCommand");
     }
     public Command runVelocityCommand(Supplier<AngularVelocity> velocity) {
         return runEnd(() -> {
-            goalVelocity = velocity.get().in(RadiansPerSecond);
-            io.setVelocity(velocity.get());
+            goalVelocity = velocity.get().in(RPM);
+            io.setVelocity(goalVelocity);
         }, io::stop)
             .withName(getName() + "/RunVelocityCommand");
     }
@@ -136,19 +107,22 @@ public class Kicker extends SubsystemBase {
     public Command runStatic() {
         return runVoltageCommand(() -> Volts.of(Ks.get()));
     }
-    public Command stopCommand(){
-        return runOnce(()->end());
+    public Command stopCommand() {
+        return runOnce(io::stop)
+            .withName(getName() + "/StopCommand");
     }
-    public Trigger kickerTrigger = new Trigger(robotPeriodic,Supplier<disconnected>Boolean);
+    public Trigger atGoalVelocity() {
+        return new Trigger(()-> Math.abs(KickerConstants.KICKER_KA.in(RadiansPerSecond)-goalVelocity<tolerance.get());
+        )
+    }
    
-    public Trigger atGoalVelocity(){
-        return new kickerTrigger(
-            ()->Math.abs(inputs.kickerAngularVelocity.in(RadiansPerSecond) - goalVelocity)
-            < tolerance.get()
-        );
-    }
+    public Trigger isJammed() {
+      return new Trigger(
+       () -> inputs.kickerAngularVelocity.lte(KickerConstants.KICKER_JAMMED_VELOCITY) && inputs.kickerCurrent.gte(KickerConstants.KICKER_JAMMED_CURRENT)
+        ).debounce(KickerConstants.KICKER_JAMMED_TIME, DebounceType.kRising);
+     
+    }  
+
+
 }
-
-
-
-
+}
