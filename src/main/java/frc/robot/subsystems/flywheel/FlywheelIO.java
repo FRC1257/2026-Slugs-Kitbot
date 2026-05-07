@@ -6,11 +6,13 @@ import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLog;
 
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Volt;
 
 public interface FlywheelIO {
     @AutoLog
     public class FlywheelIoInputs {
         public AngularVelocity velocity=RPM.of(0);
+        public Voltage voltage=Volt.of(0);
     }
 
     public default void updateInputs(FlywheelIoInputs inputs) {}
