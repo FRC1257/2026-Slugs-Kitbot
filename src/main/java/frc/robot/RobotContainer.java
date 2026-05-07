@@ -46,35 +46,10 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOPhoton;
 import frc.robot.subsystems.vision.VisionIOSim;
-import frc.robot.util.autonomous.AutoChooser;
 import frc.robot.util.drive.CommandSnailController;
 import frc.robot.util.drive.CommandSnailController.DPad;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
-import frc.robot.subsystems.ActiveFloor.ActiveFloor;
-import frc.robot.subsystems.ActiveFloor.ActiveFloorIO;
-import frc.robot.subsystems.ActiveFloor.ActiveFloorIOSparkMax;
-import frc.robot.subsystems.Hopper.HopperIntake.HopperIntake;
-import frc.robot.subsystems.Hopper.HopperIntake.HopperIntakeConstants;
-import frc.robot.subsystems.Hopper.HopperIntake.HopperIntakeIO;
-import frc.robot.subsystems.Hopper.HopperIntake.HopperIntakeIOSparkMax;
-import frc.robot.subsystems.Hopper.HopperIntake.HopperIntakeIOSim;
-import frc.robot.subsystems.Hopper.HopperPivot.HopperPivot;
-import frc.robot.subsystems.Hopper.HopperPivot.HopperPivotIO;
-import frc.robot.subsystems.Hopper.HopperPivot.HopperPivotIOSim;
-import frc.robot.subsystems.Hopper.HopperPivot.HopperPivotIOSparkMax;
-import frc.robot.subsystems.Kicker.Kicker;
-import frc.robot.subsystems.Kicker.KickerIO;
-import frc.robot.subsystems.Kicker.KickerIOSparkMax;
-import frc.robot.subsystems.Shooter.Flywheel.Flywheel;
-import frc.robot.subsystems.Shooter.Flywheel.FlywheelIO;
-import frc.robot.subsystems.Shooter.Flywheel.FlywheelIOSim;
-import frc.robot.subsystems.Shooter.Flywheel.FlywheelIOSparkMax;
-import frc.robot.subsystems.Shooter.Hood.Hood;
-import frc.robot.subsystems.Shooter.Hood.HoodIO;
-import frc.robot.subsystems.Shooter.Hood.HoodIOSim;
-import frc.robot.subsystems.Shooter.Hood.HoodIOSparkMax;
 
 
 /**
@@ -86,12 +61,6 @@ import frc.robot.subsystems.Shooter.Hood.HoodIOSparkMax;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final HopperIntake hopperIntake;
-  private final HopperPivot hopperPivot;
-  private final Kicker kicker;
-  private final Hood hood;
-  private final ActiveFloor activeFloor;
-  private final Flywheel flywheel;
 
   public static final CommandSnailController driver = new CommandSnailController(0);
   public static final CommandSnailController operator = new CommandSnailController(1);
@@ -99,7 +68,6 @@ public class RobotContainer {
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
-  private final AutoChooser customAutoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -122,17 +90,6 @@ public class RobotContainer {
                 new ModuleIOSparkMax(2),
                 new ModuleIOSparkMax(3),
                 new VisionIOPhoton());
-
-  
- 
-        hopperIntake = new HopperIntake(new HopperIntakeIOSparkMax());
-
-        hopperPivot = new HopperPivot(new HopperPivotIOSparkMax());
-        kicker = new Kicker(new KickerIOSparkMax() {});
-        activeFloor = new ActiveFloor(new ActiveFloorIOSparkMax());
-        flywheel = new Flywheel(new FlywheelIOSparkMax());
-        hood = new Hood(new HoodIOSparkMax());
-
         break;
 
       // Sim robot, instantiate physics sim IO implementations
@@ -146,16 +103,6 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new VisionIOSim());
-        
-                
-
- 
-  hopperIntake = new HopperIntake(new HopperIntakeIOSim());
-        hopperPivot = new HopperPivot(new HopperPivotIOSim());
-        kicker = new Kicker(new KickerIO() {});
-        activeFloor = new ActiveFloor(new ActiveFloorIO() {});
-        flywheel = new Flywheel(new FlywheelIOSim());
-        hood = new Hood(new HoodIOSim());
         break;
 
       // Replayed robot, disable IO implementations
@@ -169,16 +116,6 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new VisionIO() {});
-        
-
-
-  hopperIntake = new HopperIntake(new HopperIntakeIO() {});
-        hopperPivot = new HopperPivot(new HopperPivotIO() {});
-        kicker = new Kicker(new KickerIO() {});
-        activeFloor = new ActiveFloor(new ActiveFloorIO() {});
-        flywheel = new Flywheel(new FlywheelIO() {});
-        hood = new Hood(new HoodIO() {});
-
         break;
     }
 
@@ -202,8 +139,6 @@ public class RobotContainer {
         "Drive FF Characterization",
         new FeedForwardCharacterization(
             drive, drive::runCharacterization, drive::getCharacterizationVelocity));
-
-    customAutoChooser = new AutoChooser(drive, activeFloor, hopperIntake, hopperPivot, kicker, flywheel, hood);
             
   }
 
@@ -218,91 +153,6 @@ public class RobotContainer {
 
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(drive, DRIVE_FORWARD, DRIVE_STRAFE, DRIVE_ROTATE));
-
-    hopperPivot.setDefaultCommand(hopperPivot.runIntakeAngle());
-    hopperIntake.setDefaultCommand(hopperIntake.stopIntake());
-    activeFloor.setDefaultCommand(activeFloor.stopActiveFloor());
-    flywheel.setDefaultCommand(flywheel.stopCommand());
-    hood.setDefaultCommand(hood.runVoltageCommand(() -> Volts.of(0)));
-
-
-    driver.x().onTrue(
-      new InstantCommand(
-        () -> {
-          drive.stopWithX();
-          drive.resetYaw();
-        }
-      )
-    );
-
-
-    driver.y()
-    .toggleOnTrue(hopperPivot.runStowAngle());
-
-    driver.a()
-    .whileTrue(hopperPivot.runAgitate())
-    .onFalse(hopperPivot.runIntakeAngle());
-
-   // driver.b().whileTrue(drive.lockWheels());
-   driver.b().whileTrue(DriveCommands.alignToTrench(drive));
-   driver.getDPad(DPad.UP).whileTrue(drive.lockWheels());
-
-
-  driver
-    .rightBumper().whileTrue(
-      flywheel.runTargetedCommand(drive::getPose)
-      .alongWith(hood.runTargetedCommand(drive::getPose))
-      .alongWith(
-        DriveCommands.joystickHubPoint(drive, DRIVE_FORWARD, DRIVE_STRAFE).until(drive::isHubAligned)
-        .andThen(
-          Commands.either(
-            DriveCommands.joystickHubPoint(drive, DRIVE_FORWARD, DRIVE_STRAFE),
-            drive.lockWheels(), 
-            () -> Math.abs(DRIVE_FORWARD.getAsDouble())> 0.08 || Math.abs(DRIVE_STRAFE.getAsDouble()) > 0.08 || !drive.isHubAligned()))
-      .alongWith(Commands.waitUntil(flywheel.isAtGoal().and(hood.isAtGoal()).and(drive::isHubAligned))
-        .withTimeout(0.5)
-        .andThen(kicker.runIntake()
-        .alongWith(activeFloor.runActiveFloor())
-        .alongWith(hopperPivot.runAgitate())
-        .alongWith(hopperIntake.runIntake())))
-    ));
-
-  driver
-    .leftBumper().whileTrue(
-      flywheel.runHubVelocity()
-      .alongWith(hood.runHubAngle())
-      .alongWith(Commands.waitUntil(flywheel.isAtGoal().and(hood.isAtGoal()))
-        .withTimeout(0.5)
-        .andThen(kicker.runIntake()
-        .alongWith(activeFloor.runActiveFloor())
-        .alongWith(hopperPivot.runAgitate())
-        .alongWith(hopperIntake.runIntake())))
-    );
-  
-  // driver
-  //   .rightBumper().whileTrue(
-  //     kicker.runOuttake()
-  //   );
-
-    driver
-      .rightTrigger().whileTrue(
-        hopperIntake.runIntake()
-      );
-
-    driver
-      .leftTrigger().whileTrue(
-        hopperIntake.runOutake()
-      );  
-    
-
-
-  
-
-   new Trigger(() -> Math.abs(operator.getLeftY()) >= 0.1).whileTrue(flywheel.runVoltageCommand(() -> Volts.of(operator.getLeftY())));
-  
-  
-
-   operator.rightBumper().whileTrue(kicker.runVelocityCommand(() -> RadiansPerSecond.of(-5)));
   }
 
 
@@ -312,9 +162,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return customAutoChooser.getAutoCommand();
-    // return DriveCommands.feedforwardCharacterization(drive);
-    // return DriveCommands.wheelRadiusCharacterization(drive);
+    return Commands.none();
   }
 
 }
