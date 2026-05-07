@@ -284,6 +284,39 @@ public class DriveCommands {
         drive);
   }
 
+  public static Command joystickHubPoint(Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+    return joystickAnglePoint(drive, xSupplier, ySupplier, () -> {
+      Pose2d currentPose = drive.getPose();
+      Translation2d targetPose = AllianceFlipUtil.apply(Hub.topCenterPoint.toTranslation2d());
+      Rotation2d rotationSupplier = new Rotation2d(targetPose.getX()-currentPose.getX(), targetPose.getY() - currentPose.getY());
+      return rotationSupplier;
+    });
+  }
+
+  public static Command alignToTrench(Drive drive) {
+    return new AlignToPose(
+      drive,
+      () -> {
+        List<Pose2d> trenchPoses = List.of(
+          FieldConstants.AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(12).get().toPose2d(),
+          FieldConstants.AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(1).get().toPose2d(),
+          FieldConstants.AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(7).get().toPose2d(),
+          FieldConstants.AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(6).get().toPose2d(),
+          FieldConstants.AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(17).get().toPose2d(),
+          FieldConstants.AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(28).get().toPose2d(),
+          FieldConstants.AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(22).get().toPose2d(),
+          FieldConstants.AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(23).get().toPose2d());
+        
+        List<Pose2d> allPoses = new ArrayList<>(trenchPoses);
+        for(Pose2d pose: trenchPoses) {
+          allPoses.add(new Pose2d(pose.getTranslation(), pose.getRotation().rotateBy(Rotation2d.fromDegrees(180))));
+        }
+        
+        return drive.getPose().nearest(allPoses);
+      }, false);
+
+  }
+
   /**
    * Measures the velocity feedforward constants for the drive motors.
    *

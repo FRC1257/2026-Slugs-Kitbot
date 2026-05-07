@@ -12,6 +12,8 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
+import frc.robot.util.Rebuilt.Zones.RectangleZone;
+import frc.robot.util.Rebuilt.Zones.Zone;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -309,6 +311,15 @@ public class FieldConstants {
     // Relevant reference points on alliance side
     public static final Translation2d centerPoint =
         new Translation2d(0, AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(29).get().getY());
+  }
+
+  public static class Zones {
+    public static final Zone blTrench = new RectangleZone(null, null); 
+    public static final Zone brTrench = new RectangleZone(null, null);
+    public static final Zone rlTrench = new RectangleZone(null, null); 
+    public static final Zone rrTrench = new RectangleZone(null, null);
+
+    public static final Zone composedTrench = blTrench.union(brTrench).union(rlTrench).union(rrTrench);
   }
 
   public enum FieldType {
